@@ -1,0 +1,81 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+int main (int argc, char**argv){
+	
+	int matrixSize;
+	int r,c;
+	int i,j;
+	int sumDiagonal = 0, sumRow = 0, sumColumn = 0;
+	char magic;
+	int** matrix;
+	
+	char* file = argv[1];
+	FILE* fp = NULL;
+	fp = fopen(file, "r");
+	
+	fscanf(fp, "%d\n", &matrixSize); //sets first line to matrix size
+	
+	matrix = (int**) malloc (matrixSize * sizeof(int*));
+	for (r=0; r<matrixSize; r++){
+		matrix[r] = (int*) malloc (matrixSize * sizeof(int));
+	}
+	
+	for (r=0; r<matrixSize; r++){ //creates 2d array of matrix from file
+		for (c=0; c<matrixSize; c++){
+			fscanf(fp,"%d\t",&matrix[r][c]);
+		}
+	}
+	
+	for (r = 0; r < matrixSize; r++) { //sum of diagonal
+		for (c = 0; c < matrixSize; c++) {
+			if (r == c){
+				sumDiagonal += matrix[r][c];
+			}
+		}
+	}
+	
+	for (r = 0; r < matrixSize; r++) { //checking if sum of rows and columns = sum of diagonal
+		for (c = 0; c < matrixSize; c++) {
+			sumRow += matrix[r][c];
+			sumColumn += matrix[c][r];
+		}
+		if (sumDiagonal == sumRow && sumDiagonal == sumColumn){ //true if equal, false if not equal
+			magic = 't';
+			sumRow = 0;
+			sumColumn = 0; 
+		}
+		else {
+			magic = 'f'; 
+			break;
+		}
+	}
+	
+	for (r = 0; r < matrixSize; r++) {  //checks if there are any repeated numbers in the matrix
+		for (c = 0; c < matrixSize; c++) {
+			for (i = 0; i < matrixSize; i++) { 
+				for (j = 0; j < matrixSize; j++) {
+					if (r!=i && c!=j && matrix[r][c] == matrix[i][j]){
+						magic = 'f';
+					}
+				}
+			}
+		}
+	}
+						
+							
+	
+	
+	if (magic == 't'){ 
+		printf("magic");
+	}
+	else{
+		printf("not-magic");
+	}
+	
+	fclose(fp);
+	
+	return 0;
+}
+
+
